@@ -8,14 +8,17 @@ import {
   FaEyeSlash,
   FaChevronRight,
 } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import SocialLogin from "./SocialLogin";
 import Swal from "sweetalert2";
 
 const LoginPage = () => {
+  const params = useSearchParams();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const callback = params.get("callbackUrl") || "/";
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,7 +30,8 @@ const LoginPage = () => {
     const res = await signIn("credentials", {
       email: payload.email,
       password: payload.password,
-      redirect: false,
+      // redirect: false,
+      callbackUrl: params.get("callbackUrl") || "/",
     });
     console.log(res);
 
@@ -38,7 +42,7 @@ const LoginPage = () => {
     } else {
       // Success!
       Swal.fire("Success", "Successfully loggedIn", "success");
-      router.push("/");
+
       router.refresh(); // Refresh to update the navbar/session state
     }
   };
@@ -107,7 +111,7 @@ const LoginPage = () => {
           <div className="divider">New here?</div>
 
           <button
-            onClick={() => router.push("/register")}
+            onClick={() => router.push(`/register?callbackUrl=${callback}`)}
             className="btn btn-outline btn-block gap-2 group"
           >
             Create an Account{" "}

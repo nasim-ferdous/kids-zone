@@ -9,14 +9,17 @@ import {
   FaChevronLeft,
 } from "react-icons/fa";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { postUser } from "@/actions/server/auth";
 import SocialLogin from "./SocialLogin";
+import { signIn } from "next-auth/react";
 
 const RegisterPage = () => {
+  const params = useSearchParams();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const callback = params.get("callbackUrl") || "/";
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -28,8 +31,12 @@ const RegisterPage = () => {
     try {
       const result = await postUser(payload);
       if (result.acknowledged) {
+        const result = await signIn("credentials", {
+          email: payload.email,
+          password: payload.password,
+          callbackUrl: callback,
+        });
         alert("Registration Successful!");
-        router.push("/login");
       }
     } catch (error) {
       console.error("Registration failed", error);
