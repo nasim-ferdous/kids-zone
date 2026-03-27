@@ -2,6 +2,7 @@ import React from "react";
 import { FaStar, FaCartPlus, FaEye } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
+import CartButton from "../buttons/CartButton";
 
 const ProductCard = ({ product }) => {
   const { _id, title, image, price, discount, ratings, reviews, sold } =
@@ -68,10 +69,9 @@ const ProductCard = ({ product }) => {
               <FaEye />
               Details
             </Link>
-            <button className="btn btn-primary gap-2 flex-1 capitalize">
-              <FaCartPlus />
-              Add
-            </button>
+            <CartButton
+              product={{ ...product, _id: _id.toString() }}
+            ></CartButton>
           </div>
 
           {/* Optional: Full width Add to Cart if you prefer Details as a small link above */}

@@ -30,19 +30,23 @@ const LoginPage = () => {
     const res = await signIn("credentials", {
       email: payload.email,
       password: payload.password,
-      // redirect: false,
+      redirect: false,
       callbackUrl: params.get("callbackUrl") || "/",
     });
     console.log(res);
 
     if (res?.error) {
       // This will trigger if loginUser returns null
-      Swal.fire("Error", "Invalid email or password", "error");
+      Swal.fire(
+        "Error",
+        "Invalid email or password; Try google login or Register",
+        "error",
+      );
       setLoading(false);
     } else {
       // Success!
       Swal.fire("Success", "Successfully loggedIn", "success");
-
+      router.push(callback);
       router.refresh(); // Refresh to update the navbar/session state
     }
   };

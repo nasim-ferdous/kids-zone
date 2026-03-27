@@ -13,6 +13,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { postUser } from "@/actions/server/auth";
 import SocialLogin from "./SocialLogin";
 import { signIn } from "next-auth/react";
+import Swal from "sweetalert2";
 
 const RegisterPage = () => {
   const params = useSearchParams();
@@ -34,9 +35,13 @@ const RegisterPage = () => {
         const result = await signIn("credentials", {
           email: payload.email,
           password: payload.password,
+          redirect: false,
           callbackUrl: callback,
         });
-        alert("Registration Successful!");
+        if (result.ok) {
+          Swal.fire("Success", "Successfully loggedIn", "success");
+          router.push(callback);
+        }
       }
     } catch (error) {
       console.error("Registration failed", error);
