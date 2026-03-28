@@ -17,13 +17,14 @@ export const handleCart = async (productId) => {
   const isAdded = await cartCollection.findOne(query);
 
   if (isAdded) {
-    const updatedData = {
-      $inc: {
-        quantity: 1,
-      },
-    };
-    const result = await cartCollection.updateOne(query, updatedData);
-    return Boolean(result.modifiedCount);
+    return { success: false };
+    // const updatedData = {
+    //   $inc: {
+    //     quantity: 1,
+    //   },
+    // };
+    // const result = await cartCollection.updateOne(query, updatedData);
+    // return Boolean(result.modifiedCount);
   } else {
     const product = await dbConnect(collections.PRODUCTS).findOne({
       _id: new ObjectId(productId),
@@ -55,7 +56,7 @@ export const deleteItemFromCart = async (id) => {
   if (id?.length != 24) {
     return { success: false };
   }
-  const query = { _id: new ObjectId(id) , email: user?.email };
+  const query = { _id: new ObjectId(id), email: user?.email };
   const result = await cartCollection.deleteOne(query);
   // if (Boolean(result.deletedCount)) {
   //   revalidatePath("/cart");
@@ -69,7 +70,7 @@ export const increaseItemDb = async (id, quantity) => {
     return { success: false, message: "You can't buy 10 product at a time" };
   }
 
-  const query = { _id: new ObjectId(id) , email: user?.email };
+  const query = { _id: new ObjectId(id), email: user?.email };
   const updatedData = {
     $inc: {
       quantity: 1,
@@ -87,7 +88,7 @@ export const decreaseItemDb = async (id, quantity) => {
     return { success: false, message: "quantity can not be Zero" };
   }
 
-  const query = { _id: new ObjectId(id) , email: user?.email };
+  const query = { _id: new ObjectId(id), email: user?.email };
   const updatedData = {
     $inc: {
       quantity: -1,

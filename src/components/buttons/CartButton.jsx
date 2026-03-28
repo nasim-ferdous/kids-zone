@@ -20,7 +20,11 @@ const CartButton = ({ product }) => {
       if (result.success) {
         Swal.fire("Added to cart", product?.title, "success");
       } else {
-        Swal.fire("oops", "something went wrong", "error");
+        Swal.fire(
+          "Already Added",
+          "To Increase quantity go to your CART",
+          "error",
+        );
       }
       setIsLoading(false);
     } else {
