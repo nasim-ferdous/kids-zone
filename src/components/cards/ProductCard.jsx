@@ -1,90 +1,89 @@
+"use client";
 import React from "react";
-import { FaStar, FaCartPlus, FaEye } from "react-icons/fa";
+import { FaStar, FaEye, FaShoppingBasket } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import CartButton from "../buttons/CartButton";
+import { motion } from "framer-motion";
 
 const ProductCard = ({ product }) => {
-  const { _id, title, image, price, discount, ratings, reviews, sold } =
-    product;
-
+  const { _id, title, image, price, discount, ratings, reviews, sold } = product;
   const discountedPrice = price - (price * discount) / 100;
-  const handleDetailButton = () => {};
 
   return (
-    <div className="card w-full max-w-sm bg-base-100 shadow-xl border border-base-200 hover:shadow-2xl transition-all duration-300 group/card">
-      {/* Image Section */}
-      <figure className="relative h-64 w-full bg-slate-50">
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="group relative bg-base-100 rounded-2xl border border-base-200 overflow-hidden hover:shadow-xl transition-all duration-300"
+    >
+      {/* Image Section - Reduced height from 64 to 52 */}
+      <div className="relative h-52 w-full bg-slate-50 overflow-hidden">
         <Image
           src={image}
           alt={title}
-          width={400}
-          height={400}
-          className="object-contain p-4 group-hover/card:scale-105 transition-transform duration-500"
+          fill
+          className="object-contain p-6 group-hover:scale-110 transition-transform duration-500"
         />
+        
+        {/* Floating Discount Badge */}
         {discount > 0 && (
-          <div className="badge badge-secondary absolute top-4 right-4 font-bold">
-            -{discount}%
+          <div className="absolute top-3 left-3 badge badge-primary font-bold shadow-sm">
+            {discount}% OFF
           </div>
         )}
-      </figure>
 
-      <div className="card-body p-5">
-        {/* Title */}
-        <h2 className="card-title text-lg font-bold line-clamp-2 min-h-[3.5rem] leading-tight">
+        {/* Quick View Overlay (Appears on Hover) */}
+        <div className="absolute inset-0 bg-black/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <Link
+            href={`/products/${_id}`}
+            className="btn btn-circle btn-white shadow-lg border-none hover:bg-primary hover:text-white"
+          >
+            <FaEye size={18} />
+          </Link>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="p-4">
+        {/* Title - Reduced min-height for compactness */}
+        <h2 className="text-sm font-bold text-neutral line-clamp-2 h-10 leading-tight mb-2 group-hover:text-primary transition-colors">
           {title}
         </h2>
 
-        {/* Ratings & Sold Info */}
-        <div className="flex items-center gap-2 mt-1">
-          <div className="flex items-center text-warning">
-            <FaStar className="mr-1" />
-            <span className="font-semibold text-sm">{ratings}</span>
+        {/* Ratings & Sold - Minimalist row */}
+        <div className="flex items-center justify-between text-[11px] mb-3">
+          <div className="flex items-center gap-1 bg-warning/10 text-warning-content px-2 py-0.5 rounded-md font-bold">
+            <FaStar size={10} />
+            {ratings}
           </div>
-          <div className="text-xs text-base-content/60">
-            ({reviews} reviews) •{" "}
-            <span className="font-medium text-primary">{sold} sold</span>
+          <div className="opacity-60 uppercase tracking-tighter">
+            {sold} Sold
           </div>
         </div>
 
-        {/* Price Section */}
-        <div className="mt-4 flex items-baseline gap-2">
-          <span className="text-2xl font-extrabold text-primary">
-            ৳{discountedPrice.toLocaleString()}
-          </span>
-          {discount > 0 && (
-            <span className="text-sm line-through opacity-50">
-              ৳{price.toLocaleString()}
+        {/* Price & Action Row */}
+        <div className="flex items-center justify-between mt-auto pt-2 border-t border-base-200">
+          <div className="flex flex-col">
+            <span className="text-lg font-black text-primary leading-none">
+              ৳{discountedPrice.toLocaleString()}
             </span>
-          )}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="card-actions mt-4 flex flex-col gap-2">
-          <div className="grid grid-cols-2 gap-2 w-full">
-            <Link
-              href={`/products/${_id}`}
-              className="btn btn-outline btn-primary gap-2 flex-1 capitalize"
-            >
-              <FaEye />
-              Details
-            </Link>
-            <CartButton
-              product={{ ...product, _id: _id.toString() }}
-            ></CartButton>
+            {discount > 0 && (
+              <span className="text-[10px] line-through opacity-40">
+                ৳{price.toLocaleString()}
+              </span>
+            )}
           </div>
-
-          {/* Optional: Full width Add to Cart if you prefer Details as a small link above */}
-          {/* <button className="btn btn-ghost btn-sm text-primary gap-2 w-full">
-             <FaEye /> View Details
-          </button>
-          <button className="btn btn-primary btn-block gap-2 group">
-            <FaCartPlus className="text-lg group-hover:scale-110 transition-transform" />
-            Add to Cart
-          </button> */}
+          
+          {/* Compact Cart Button */}
+          <div className="scale-90 origin-right">
+             <CartButton
+                product={{ ...product, _id: _id.toString() }}
+              />
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

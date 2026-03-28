@@ -2,6 +2,7 @@
 import React, { useMemo, useState } from "react";
 import CartItem from "../cards/CartItem";
 import Link from "next/link";
+import { FaLock, FaArrowRight, FaShoppingBasket } from "react-icons/fa";
 
 const Cart = ({ cartItems = [] }) => {
   const [items, setItems] = useState(cartItems);
@@ -13,9 +14,11 @@ const Cart = ({ cartItems = [] }) => {
     () => items.reduce((acc, item) => acc + item.price * item.quantity, 0),
     [items],
   );
+
   const removeItem = (id) => {
     setItems((prevItems) => prevItems.filter((item) => item._id != id));
   };
+
   const updateQuantity = (id, q) => {
     setItems((prevItems) =>
       prevItems.map((item) =>
@@ -23,86 +26,95 @@ const Cart = ({ cartItems = [] }) => {
       ),
     );
   };
+
+  if (items.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center bg-base-100 rounded-3xl border-2 border-dashed border-base-200">
+        <div className="text-6xl mb-4 opacity-20">🛒</div>
+        <h2 className="text-2xl font-bold">Your cart is empty</h2>
+        <p className="text-base-content/60 mb-6">
+          Looks like you haven't added anything yet.
+        </p>
+        <Link href="/products" className="btn btn-primary rounded-full px-8">
+          Start Shopping
+        </Link>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <p className="mt-2 text-base-content/60">
-        You have {items.length} items in your cart
-      </p>
-
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex-3">
-          {items.map((item) => (
-            // Now item._id is a plain string, so this won't crash
-            <CartItem
-              key={item._id}
-              item={item}
-              removeItem={removeItem}
-              updateQuantity={updateQuantity}
-            />
-          ))}
+    <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 items-start">
+      {/* Left: Items List (8 Columns) */}
+      <div className="lg:col-span-8 w-full space-y-4">
+        <div className="flex items-center justify-between px-2 mb-2">
+          <span className="text-sm font-bold text-base-content/50 uppercase tracking-widest flex items-center gap-2">
+            <FaShoppingBasket className="text-primary" /> Review Items
+          </span>
+          <span className="badge badge-ghost font-bold">
+            {items.length} Products
+          </span>
         </div>
+        {items.map((item) => (
+          <CartItem
+            key={item._id}
+            item={item}
+            removeItem={removeItem}
+            updateQuantity={updateQuantity}
+          />
+        ))}
+      </div>
 
-        {/* Order Summary Placeholder */}
-        {/* Order Summary */}
-        <div className="flex-1 bg-base-100 p-6 rounded-2xl h-fit border border-base-200 shadow-sm">
-          <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-base-200 text-base-content">
+      {/* Right: Order Summary (4 Columns) - Sticky on Desktop */}
+      <aside className="lg:col-span-4 w-full lg:sticky lg:top-24">
+        <div className="bg-neutral text-neutral-content p-8 rounded-[2.5rem] shadow-xl border border-neutral-focus">
+          <h2 className="text-xl font-black mb-6 flex items-center gap-2 uppercase tracking-tighter">
             Order Summary
           </h2>
 
           <div className="space-y-4">
-            {/* Detailed Breakdown */}
-            <div className="flex justify-between items-center text-base-content/70">
-              <span>Total Items</span>
-              <span className="font-semibold text-base-content">
-                {items.length}
-              </span>
+            <div className="flex justify-between items-center opacity-70 text-sm">
+              <span>Subtotal ({totalQuantity} units)</span>
+              <span className="font-bold">৳{totalPrice.toLocaleString()}</span>
             </div>
 
-            <div className="flex justify-between items-center text-base-content/70">
-              <span>Total Quantity</span>
-              <span className="font-semibold text-base-content">
-                {totalQuantity}
-              </span>
+            <div className="flex justify-between items-center opacity-70 text-sm">
+              <span>Estimated Shipping</span>
+              <span className="font-bold text-success">FREE</span>
             </div>
 
-            <div className="flex justify-between items-center text-base-content/70">
-              <span>Subtotal</span>
-              <span className="font-semibold text-base-content">
-                ৳{totalPrice.toLocaleString()}
-              </span>
-            </div>
+            <div className="h-[1px] bg-neutral-content/10 my-4"></div>
 
-            <div className="flex justify-between items-center text-base-content/70">
-              <span>Shipping Fee</span>
-              <span className="font-semibold text-success">Free</span>
-            </div>
-
-            {/* Divider */}
-            <div className="divider my-2"></div>
-
-            {/* Final Total */}
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-8">
               <span className="text-lg font-bold">Total Amount</span>
-              <span className="text-2xl font-black text-primary">
+              <span className="text-3xl font-black text-primary tracking-tighter">
                 ৳{totalPrice.toLocaleString()}
               </span>
             </div>
 
-            {/* Confirm Button */}
             <Link
-              disabled={items.length === 0}
-              className="btn btn-primary btn-block text-lg shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all"
-              href={"/checkout"}
+              href="/checkout"
+              className="btn btn-primary btn-block h-16 rounded-full text-lg font-black uppercase tracking-widest shadow-lg border-none group"
             >
               Confirm Order
+              <FaArrowRight className="group-hover:translate-x-2 transition-transform" />
             </Link>
 
-            <p className="text-[10px] text-center text-base-content/40 mt-4 uppercase tracking-widest font-bold">
-              Secure Checkout Powered by NextAuth
-            </p>
+            <div className="flex flex-col items-center gap-2 mt-6 opacity-40 italic">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em]">
+                <FaLock /> Secure Checkout
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+
+        {/* Support Note */}
+        <div className="mt-6 p-4 bg-base-200/50 rounded-2xl border border-base-200 text-center">
+          <p className="text-xs font-medium text-base-content/60">
+            Need help? Call us at{" "}
+            <span className="text-primary font-bold">+880 1XXX-XXXXXX</span>
+          </p>
+        </div>
+      </aside>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { clearCart, getCart } from "./cart";
 import { getInvoiceHtml } from "@/lib/orderInvoice";
 import { sendEmail } from "@/lib/sendEmail";
+import { ObjectId } from "mongodb";
 
 const { dbConnect, collections } = require("@/lib/dbConnect");
 
@@ -19,6 +20,11 @@ export const createOrder = async (payload) => {
   if (cart.length === 0) {
     return { success: false };
   }
+  // to do =>
+  // const products = cart.map((item) => ({
+  //   _id: new ObjectId(cart.productId),
+  //   quantity: cart.quantity,
+  // }));
   const newOrder = {
     createdAt: new Date().toISOString(),
     items: cart,

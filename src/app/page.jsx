@@ -1,20 +1,46 @@
 import Banner from "@/components/home/Banner";
-import Products from "@/components/home/Products";
-import Test from "@/components/Test";
-import { authOptions } from "@/lib/authOptions";
-import { getServerSession } from "next-auth";
+import Categories from "@/components/home/Categories";
+import FAQSection from "@/components/home/FAQ";
+import FlashSale from "@/components/home/FlashSale";
+import Gallery from "@/components/home/Gallery";
+import NewsLetter from "@/components/home/NewsLetter";
+import PromoBanners from "@/components/home/PromoBanners";
+import Testimonial from "@/components/home/Testimonial";
+import TrustBar from "@/components/home/TrustBar";
+import WhyChooseUs from "@/components/home/WhyChooseUs";
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
   return (
     <div className="space-y-5">
-      <Test></Test>
-      <p>{JSON.stringify(session)}</p>
       <section>
         <Banner></Banner>
       </section>
       <section>
-        <Products></Products>
+        <TrustBar></TrustBar>
+      </section>
+      <section>
+        <Categories></Categories>
+      </section>
+      <section>
+        <FlashSale></FlashSale>
+      </section>
+      <section>
+        <PromoBanners></PromoBanners>
+      </section>
+      <section>
+        <WhyChooseUs></WhyChooseUs>
+      </section>
+      <section>
+        <Testimonial></Testimonial>
+      </section>
+      <section>
+        <Gallery></Gallery>
+      </section>
+      <section>
+        <FAQSection></FAQSection>
+      </section>
+      <section>
+        <NewsLetter></NewsLetter>
       </section>
     </div>
   );
